@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #BCBAB8;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .form {
+      margin-top: 20px;
+    }
+
+    .register-link {
+      margin-top: 15px;
+      display: block;
+      color: #825CFF;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .register-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <form class="form" id="login-form">
+      <div class="form-control">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
+      </div>
+      <div class="form-control">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn" id="login-btn">Login</button>
+      <a href="register.html" class="register-link">Don't have an account? Register</a>
+    </form>
+  </div>
+
+  <script>
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      // If logged in
+      window.location.href = "expense_tracker.html"; // redirected
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+      }
+
+      const user = { username, password };
+
+      try {
+        const response = await fetch("http://localhost:8080/ExpTrack/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert(errorData.message); // Backend sends plain error
+          return;
+        }
+
+        const data = await response.json();
+        console.log(data.username);
+        localStorage.setItem("user", data.username);
+        window.location.href = "expense_tracker.html"; // redirected
+
+      }
+      catch (error) {
+        alert("Request failed: " + error.message);
+      }
+
+    });
+  </script>
+</body>
+
+</html>

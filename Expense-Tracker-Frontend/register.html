@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #BCBAB8;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .form {
+      margin-top: 20px;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      display: block;
+      color: #825CFF;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Register</h1>
+    <div class="form">
+      <form id="form">
+        <div class="form-control">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Choose a username">
+        </div>
+        <div class="form-control">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email">
+        </div>
+        <div class="form-control">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Create a password">
+        </div>
+        <div class="form-control">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" placeholder="Confirm your password">
+        </div>
+        <button type="button" class="btn" id="register-btn">Register</button>
+        <a href="login.html" class="login-link">Already have an account? Login</a>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('register-btn').addEventListener('click', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+      if (!username || !email || !password || !confirmPassword) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      const user = { username, email, password };
+
+      try {
+        const response = await fetch("http://localhost:8080/ExpTrack/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.text();
+          alert("Error: " + errorData); // Backend sends plain error
+          return;
+        }
+
+        const data = await response.json();
+        alert("Registration successful for: " + data.username);
+        window.location.href = 'login.html';
+
+        // Optionally redirect or clear form
+        document.getElementById("form").reset();
+        //form.reset();
+
+      } catch (error) {
+        alert("Request failed: " + error.message);
+      }
+
+    });
+  </script>
+</body>
+
+</html>

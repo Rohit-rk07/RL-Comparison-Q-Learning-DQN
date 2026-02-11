@@ -1,0 +1,70 @@
+# ========================
+# Spring Boot & Java
+# ========================
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Ignore Maven logs and temp files
+.mvn/
+mvnw.cmd
+mvnw
+
+# Ignore application properties (contains DB credentials)
+application.properties
+
+# ========================
+# IDE files
+# ========================
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# ========================
+# Node / Frontend
+# ========================
+# If your frontend folder has a React, Vue, or Node app
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.DS_Store
+
+# If your frontend is not in 'frontend/' folder, adjust the path accordingly.
+node_modules/
+build/
+.env
+.DS_Store
+
+# ========================
+# OS / Misc
+# ========================
+Thumbs.db
+.DS_Store
+*.log
