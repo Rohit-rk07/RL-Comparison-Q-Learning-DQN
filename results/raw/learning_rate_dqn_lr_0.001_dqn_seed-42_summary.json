@@ -1,0 +1,30 @@
+{
+  "algorithm": "dqn",
+  "environment": "CartPole-v1",
+  "seed": 42,
+  "timestamp_utc": "2026-08-17T18:19:33+00:00",
+  "duration_seconds": 61.44697539997287,
+  "final_25_episode_mean": 368.32,
+  "best_25_episode_mean": 368.32,
+  "hyperparameters": {
+    "environment": "CartPole-v1",
+    "episodes": 300,
+    "learning_rate": 0.001,
+    "gamma": 0.99,
+    "batch_size": 64,
+    "replay_capacity": 10000,
+    "min_replay_size": 500,
+    "target_update_frequency": 100,
+    "epsilon_start": 1.0,
+    "epsilon_min": 0.05,
+    "epsilon_decay": 0.985,
+    "hidden_size": 64,
+    "max_steps": 500
+  },
+  "evaluation": {
+    "mean_reward": 500.0,
+    "std_reward": 0.0,
+    "success_rate": 1.0,
+    "mean_length": 500.0
+  }
+}

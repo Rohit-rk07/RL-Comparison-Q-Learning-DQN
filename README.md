@@ -1,65 +1,88 @@
-# Expense Tracker App 💰
+# Comparative Study of Q-Learning and Deep Q-Networks for Reinforcement Learning
 
-[![Java](https://img.shields.io/badge/Language-Java-orange)](https://www.java.com/)
-[![Spring Boot](https://img.shields.io/badge/Framework-Spring%20Boot-brightgreen)](https://spring.io/projects/spring-boot)
-[![MySQL](https://img.shields.io/badge/Database-MySQL-blue)](https://www.mysql.com/)
-[![Frontend](https://img.shields.io/badge/Frontend-HTML/CSS/JS-yellow)](#)
+A reproducible, research-oriented comparison of tabular **Q-Learning** and a PyTorch **Deep Q-Network (DQN)**. The project examines learning behavior, exploration, stability, and hyperparameter sensitivity—not a misleading claim that one algorithm is universally superior.
 
-A **full-stack Expense Tracker application** built with **Spring Boot**, **MySQL**, and **JavaScript**.  
-Users can register, log in, add transactions, and view dynamic reports for expenses, income, and balances.
+## Research question
 
----
+> How do tabular Q-Learning and DQNs differ in learning behavior, exploration, stability, and hyperparameter sensitivity?
 
-## Features
+## Algorithms
 
-### User
-- Register and login securely
-- Add income and expense transactions
-- View transaction history
-- See dynamic balance, income, and expense reports
+### Q-Learning
 
-### Backend
-- RESTful APIs for user authentication and transaction management
-- Service and repository layers for clean architecture
-- MySQL database integration via Spring Data JPA
+Q-Learning uses a state-action table and the update
 
-### Frontend
-- Static HTML pages with CSS styling and JavaScript functionality
-- Responsive forms for login, registration, and transactions
-- Dynamic transaction reporting
+$$Q(s,a) \leftarrow Q(s,a) + \alpha\left[r + \gamma \max_{a'}Q(s',a') - Q(s,a)\right].$$
 
----
+It runs on deterministic 4×4 `FrozenLake-v1` (`is_slippery=False`), where states and actions are both discrete. The learned table is fully inspectable.
 
-## Tech Stack
+### Deep Q-Network
 
-- **Backend:** Java, Spring Boot, Spring Data JPA, MySQL  
-- **Frontend:** HTML, CSS, JavaScript  
-- **Database:** MySQL (Workbench used for development)  
-- **Build Tool:** Maven  
-- **IDE:** IntelliJ IDEA (Backend), VS Code (Frontend)  
+DQN uses a small two-hidden-layer ReLU network to approximate action values on continuous `CartPole-v1` states. It trains from randomly sampled transitions `(state, action, reward, next_state, done)` in an experience replay buffer. A periodically synchronized target network supplies the bootstrap target:
 
----
+$$y = r + \gamma(1-d)\max_{a'} Q_{target}(s',a').$$
+
+Both agents use ε-greedy exploration. Evaluation always sets ε to zero and does not update parameters.
+
+## Experimental design
+
+- Baselines are repeated with seeds `42`, `123`, and `2026`.
+- Every raw per-episode record includes reward, length, epsilon, and seed. DQN also records loss and mean predicted Q-value when updates occur.
+- Each run records its UTC timestamp, configuration, duration, and held-out greedy evaluation result in JSON.
+- Hyperparameter studies vary one factor at a time: exploration schedule; learning rate for each method; replay capacity; and target-network synchronization frequency.
+- Curves aggregate seed means with a shaded ±1 standard-deviation band.
 
 ## Installation
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/Jerrwin/Expense-Tracker.git
+python -m venv .venv
+.venv\\Scripts\\activate       # Windows PowerShell
+pip install -r requirements.txt
 ```
-2. Import the backend Spring Boot project in IntelliJ IDEA.
-3. Set up MySQL database using MySQL Workbench:
+
+## Reproduce
+
+From the repository root:
+
 ```bash
-CREATE DATABASE expense_tracker;
+pytest
+python -m experiments.run_baseline
+python -m experiments.run_hyperparameters
+python -m experiments.run_seeds
 ```
-  Update application.properties with your database credentials.
 
-4. Run the Spring Boot backend application (it will start on http://localhost:8080 by default).  
-5. Open the frontend folder (`Expense-Tracker-Frontend/`) in VS Code or any code editor.  
-6. Open the HTML files in your browser or use a live server extension to view the app.  
+Generated episode CSV files and run metadata are written to `results/raw/`; seed aggregates and summary rows are in `results/processed/`; PNG figures are placed in `results/plots/`. Models are intentionally not committed.
 
----
+## Outputs
 
-## Contributing
+After running the commands, the principal figures are:
 
-Feel free to fork the repo, submit issues, or create pull requests.  
-Maintain the project structure and coding style.
+1. `q_learning_baseline.png` — FrozenLake learning curve.
+2. `dqn_baseline.png` — CartPole learning curve.
+3. `exploration_q_learning.png` — exploration strategy comparison.
+4. `learning_rate_q_learning.png` and `learning_rate_dqn.png` — learning-rate comparison.
+5. `replay_buffer_dqn.png` — replay capacity comparison.
+6. `target_update_dqn.png` — target-network synchronization comparison.
+7. `q_learning_seeds.png` and `dqn_seeds.png` — run-to-run seed variability.
+8. `algorithm_perspective_normalized.png` — task-normalized learning progress; this is explicitly not a raw-reward ranking.
+
+The repository deliberately does not pre-state numerical findings: figures and summaries are generated by actual runs. Add findings only after inspecting the produced data.
+
+## Interpretation and limitations
+
+FrozenLake reward and CartPole reward are different measurements on different tasks. Therefore their raw reward values must **not** be interpreted as a direct numerical contest between Q-Learning and DQN. The appropriate comparison is conceptual: a table is practical and interpretable for a small discrete state space, whereas a neural function approximator makes continuous CartPole observations tractable.
+
+Results are also limited by modest compute, three seeds, a small network, and simplified environments. They provide controlled evidence about these settings, not universal RL conclusions.
+
+## Project layout
+
+```text
+repository-root/
+├── src/             # Agents, environments, replay buffer, evaluation, orchestration
+├── experiments/     # `python -m` entry points
+├── tests/           # pytest unit tests
+├── results/         # generated raw data, summaries, and figures
+├── models/          # optional saved model checkpoints (ignored by Git)
+├── requirements.txt
+└── README.md
+```
