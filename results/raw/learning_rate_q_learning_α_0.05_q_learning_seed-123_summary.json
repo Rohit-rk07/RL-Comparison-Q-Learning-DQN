@@ -1,0 +1,26 @@
+{
+  "algorithm": "q_learning",
+  "environment": "FrozenLake-v1",
+  "seed": 123,
+  "timestamp_utc": "2026-08-17T18:18:16+00:00",
+  "duration_seconds": 0.3364206000114791,
+  "final_25_episode_mean": 0.96,
+  "best_25_episode_mean": 1.0,
+  "hyperparameters": {
+    "environment": "FrozenLake-v1",
+    "episodes": 2000,
+    "alpha": 0.05,
+    "gamma": 0.99,
+    "epsilon_start": 1.0,
+    "epsilon_min": 0.02,
+    "epsilon_decay": 0.997,
+    "epsilon_strategy": "exponential",
+    "max_steps": 100
+  },
+  "evaluation": {
+    "mean_reward": 1.0,
+    "std_reward": 0.0,
+    "success_rate": 1.0,
+    "mean_length": 6.0
+  }
+}
