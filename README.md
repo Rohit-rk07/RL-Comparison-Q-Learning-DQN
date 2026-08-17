@@ -36,7 +36,7 @@ Both agents use ε-greedy exploration. Evaluation always sets ε to zero and doe
 
 ```bash
 python -m venv .venv
-.venv\\Scripts\\activate       # Windows PowerShell
+.\.venv\Scripts\Activate.ps1    # Windows PowerShell
 pip install -r requirements.txt
 ```
 
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 From the repository root:
 
 ```bash
-pytest
+python -m pytest
 python -m experiments.run_baseline
 python -m experiments.run_hyperparameters
 python -m experiments.run_seeds
